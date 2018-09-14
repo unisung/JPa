@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Board">
+<resultMap type="board" id="resultBoard">
+	<result property="seq" column="seq"/>
+	<result property="title" column="title"/>
+	<result property="writer" column="writer"/>
+	<result property="content" column="content"/>
+	<result property="regdate" column="regdate"/>
+	<result property="cnt" column="cnt"/>
+	<result property="filename" column="filename"/>
+</resultMap>
+
+<insert id="insertBoard" 
+           parameterType="board">
+  insert into board(seq,title,writer,content,filename)
+  values((select nvl(max(seq),0)+1 from board),
+              #{title},#{writer},#{content},#{filename})
+</insert>
+
+<update id="updateBoard" parameterType="board">
+		update board 
+		      set title=#{title},
+		            content=#{content}
+		 <if test="filename!=null">
+		 	        , filename=#{filename}
+		 </if>
+	     where seq=#{seq}
+</update>
+
+<delete id="deleteBoard" parameterType="board">
+   	delete from board where seq=#{seq}
+</delete>
+
+<select id="getBoard" parameterType="board" resultType="board">
+   select * from board where seq=#{seq}
+</select>
+
+<select id="getBoardList" parameterType="board" resultMap="resultBoard">
+    select * 
+      from board 
+	 where 
+	 <if test="searchCondition=='TITLE'">
+	 	title like '%'||#{searchKeyword}||'%'
+	 </if>
+	 <if test="searchCondition=='CONTENT'">
+	    content like '%'||#{searchKeyword}||'%'
+	 </if>		    
+		order by seq
+</select>
+
+<update id="updateViewCount" parameterType="board">
+	update board set cnt=cnt+1 where seq=#{seq} 
+</update>
+
+</mapper>
