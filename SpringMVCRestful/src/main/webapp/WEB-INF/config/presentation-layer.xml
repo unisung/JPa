@@ -55,7 +55,8 @@
   	 <property name="suffix" value=".jsp"/>
   </bean>      -->
   
-  <!--  -->
- <!--    <mvc:default-servlet-handler/> -->
+  <!-- DispatcherServlet url패턴이 "/"로 바뀌면 tomcat의 url패턴을 무시함.
+         DefaultServlet동작이 안됨 -해결방법 -->
+  <mvc:default-servlet-handler/>
 
 </beans>
